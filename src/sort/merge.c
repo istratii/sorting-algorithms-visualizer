@@ -3,7 +3,7 @@
 
 #include "sort.h"
 
-static void __merge(int *s1, int *e1, int *s2, int *e2, int (*comp)(int, int))
+static void __merge(int *s1, int *e1, int *s2, int *e2, int (*cmp)(int, int))
 {
   if (s2 == e2)
     return;
@@ -15,7 +15,7 @@ static void __merge(int *s1, int *e1, int *s2, int *e2, int (*comp)(int, int))
 
   while (s1 < e1 && s2 < e2)
   {
-    if (comp(*s1, *s2) < 0)
+    if (cmp(*s1, *s2) < 0)
       *tmp = *(s1++);
 
     else
@@ -34,18 +34,18 @@ static void __merge(int *s1, int *e1, int *s2, int *e2, int (*comp)(int, int))
   free(out);
 }
 
-static void __merge_sort(int *start, int *end, int (*comp)(int, int))
+static void __merge_sort(int *start, int *end, int (*cmp)(int, int))
 {
   if (end - start <= 1)
     return;
 
   int *mid = start + ((end - start) >> 1);
-  __merge_sort(start, mid, comp);
-  __merge_sort(mid, end, comp);
-  __merge(start, mid, mid, end, comp);
+  __merge_sort(start, mid, cmp);
+  __merge_sort(mid, end, cmp);
+  __merge(start, mid, mid, end, cmp);
 }
 
-void merge(int *array, int size, int (*comp)(int, int))
+void merge(int *array, int size, int (*cmp)(int, int))
 {
-  __merge_sort(array, array + size, comp);
+  __merge_sort(array, array + size, cmp);
 }

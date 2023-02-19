@@ -5,12 +5,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#define ASC_DES (0x3)
-#define ASC (0x1)
-#define DES (0x2)
-#define CHECK_ASC(Mode) ((Mode)&ASC)
-#define CHECK_DES(Mode) ((Mode)&DES)
+#define MODE_BOTH (0x3)
+#define MODE_ASC (0x1)
+#define MODE_DES (0x2)
+#define PRED_ASC(Mode) ((Mode) & (MODE_ASC))
+#define PRED_DES(Mode) ((Mode) & (MODE_DES))
 
-int check(void (*sort)(int *, int, int (*comp)(int, int)), char *algname, int mode);
+int check(void (*sort)(int *, int, int (*cmp)(int, int)), int mode);
 
 #endif /* ! UTILS_H */

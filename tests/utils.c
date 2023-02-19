@@ -3,12 +3,11 @@
 
 #define SIZE 42
 
-#define CHECK(Ref, Out, Size, Sort, Comparator, Check, Debug, Name, Mode, Status)                                      \
+#define CHECK(Ref, Out, Size, Sort, Comparator, Check, Debug, Status)                                                  \
   memcpy(Out, Ref, Size * sizeof(int));                                                                                \
   Sort(Out, Size, Comparator);                                                                                         \
   if (!Check(Out, Size))                                                                                               \
   {                                                                                                                    \
-    fprintf(stderr, "%s FAILED %s\n", Name, Mode);                                                                     \
     Debug(Out, Size);                                                                                                  \
     Status = 0;                                                                                                        \
   }
@@ -147,7 +146,7 @@ static void __debug(int *got, int size)
   __print_array(got, size);
 }
 
-int check(void (*sort)(int *, int, int (*comp)(int, int)), char *algname, int mode)
+int check(void (*sort)(int *, int, int (*cmp)(int, int)), int mode)
 {
   int ok = 1;
 
@@ -155,14 +154,14 @@ int check(void (*sort)(int *, int, int (*comp)(int, int)), char *algname, int mo
   {
     int array[SIZE];
 
-    if (CHECK_ASC(mode))
+    if (PRED_ASC(mode))
     {
-      CHECK(N[i], array, SIZE, sort, __asc, __check_asc, __debug, algname, "ascending", ok);
+      CHECK(N[i], array, SIZE, sort, __asc, __check_asc, __debug, ok);
     }
 
-    if (CHECK_DES(mode))
+    if (PRED_DES(mode))
     {
-      CHECK(N[i], array, SIZE, sort, __des, __check_des, __debug, algname, "descending", ok);
+      CHECK(N[i], array, SIZE, sort, __des, __check_des, __debug, ok);
     }
   }
 

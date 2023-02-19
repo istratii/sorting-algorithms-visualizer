@@ -3,7 +3,7 @@
 
 #define LIMIT 1000
 
-void count(int *array, int size, int (*comp)(int, int))
+void count(int *array, int size, int (*cmp)(int, int))
 {
   int M[LIMIT] = { 0 };
 
