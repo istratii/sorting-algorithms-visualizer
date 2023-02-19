@@ -2,8 +2,13 @@
 #ifndef SORT_H
 #define SORT_H
 
-void bubble(int *array, int size, int (*comp)(int, int));
-void insertion(int *array, int size, int (*comp)(int, int));
+#define SIGNATURE int *array, int size, int (*comp)(int, int)
+
+void bubble(SIGNATURE);
+void insertion(SIGNATURE);
+void selection(SIGNATURE);
+void heap(SIGNATURE);
+void count(SIGNATURE);
 void swap(int *x, int *y);
 
 #endif /* ! SORT_H */
