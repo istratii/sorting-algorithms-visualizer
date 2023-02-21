@@ -5,10 +5,10 @@
 #include "utils.h"
 
 #define CONCAT(A, B) A##B
-#define TEST_CASE(Func, Mode)                                                                                          \
-  Test(CONCAT(test_, Func), CONCAT(Func, _sort))                                                                       \
-  {                                                                                                                    \
-    cr_assert(check(Func, Mode));                                                                                      \
+#define TEST_CASE(Func, Mode)                                                                      \
+  Test(CONCAT(test_, Func), CONCAT(Func, _sort))                                                   \
+  {                                                                                                \
+    cr_assert(check(Func, Mode));                                                                  \
   }
 
 TEST_CASE(bubble, MODE_BOTH);
