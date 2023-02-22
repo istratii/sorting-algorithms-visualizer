@@ -3,6 +3,12 @@
 
 static void __quick(struct setup *setup, struct queue *states, struct state *curr, const int *begin)
 {
+  // begin represents the real `setup->array` start address
+  // it is used to compute correct swap indexes
+
+  // `curr` is passed as parameter in order to save all stats
+  // during each and every recursion call
+
   struct state *temp = NULL;
 
   RESET_SWAP_INDEXES(curr);
@@ -58,7 +64,7 @@ static void __quick(struct setup *setup, struct queue *states, struct state *cur
   struct setup rec = { setup->array, i, setup->cmp };
   __quick(&rec, states, curr, begin);
 
-  // recursion on second half
+  // recursion second half
   rec.array = setup->array + i;
   rec.size = setup->size - i;
   __quick(&rec, states, curr, begin);

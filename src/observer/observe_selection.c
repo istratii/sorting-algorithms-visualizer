@@ -8,7 +8,7 @@ void __observe_selection(struct setup *setup, struct queue *states)
 
   state_init(&curr);
 
-  // loop end
+  // for 1 loop end
   ++(curr->comparisons);
 
   for (int i = 0; i + 1 < setup->size; ++i)
@@ -19,7 +19,7 @@ void __observe_selection(struct setup *setup, struct queue *states)
     int j = i;
     int k = i + 1;
 
-    // loop end
+    // for 2 loop end
     ++(curr->comparisons);
 
     for (; k < setup->size; ++k)

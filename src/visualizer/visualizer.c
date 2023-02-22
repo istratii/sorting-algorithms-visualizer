@@ -1,7 +1,7 @@
 
 #include "visualizer.h"
 
-#define FONT_PATH "src/visualizer/PIXEAB__.TTF"
+#define FONT_PATH "src/visualizer/fonts/PIXEAB__.TTF"
 #define FONT_POINT_SIZE 15
 #define BACKGROUND_COLOR 0x80, 0x80, 0x80
 #define BLOCK_COLOR 0x00, 0x00, 0x00
@@ -43,6 +43,7 @@ static void __visualize(int *array, int size, struct state *state)
   SDL_SetRenderDrawColor(renderer, BACKGROUND_COLOR, 0xff);
   SDL_RenderClear(renderer);
 
+  // render each number as a rectangle
   for (int i = 0; i < size; ++i)
   {
     rect.x = i * WIDTH / size;
@@ -57,10 +58,13 @@ static void __visualize(int *array, int size, struct state *state)
     SDL_RenderFillRect(renderer, &rect);
   }
 
+  // render stats
   __visualize_stats_field("accesses", state->accesses, STATS_INITIAL_XY, Y(0));
   __visualize_stats_field("comparisons", state->comparisons, STATS_INITIAL_XY, Y(1));
   __visualize_stats_field("size", size, STATS_INITIAL_XY, Y(2));
   __visualize_stats_field("swaps", state->swaps, STATS_INITIAL_XY, Y(3));
+
+  // update screen
   SDL_RenderPresent(renderer);
 }
 
@@ -72,6 +76,8 @@ static void __next(int *array, struct state *state)
 
 static float __compute_height_coeff(int *array, int size)
 {
+  // compute a height normalization coeff with respect to array's max
+
   int m = ABS(array[0]);
 
   for (int i = 1; i < size; ++i)
@@ -81,7 +87,7 @@ static float __compute_height_coeff(int *array, int size)
   if (m <= (HEIGHT >> 1))
     return 0.66f;
 
-  return 1.0f * (HEIGHT >> 1) / m;
+  return 0.66f * (HEIGHT >> 1) / m;
 }
 
 static int __prepare(int *array, int size)

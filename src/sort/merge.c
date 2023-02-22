@@ -3,49 +3,41 @@
 
 #include "sort.h"
 
-static void __merge(int *s1, int *e1, int *s2, int *e2, int (*cmp)(int, int))
+static void __merge(int *array, int size, int (*cmp)(int, int))
 {
-  if (s2 == e2)
+  if (size == 0)
     return;
 
-  int size = e2 - s1;
-  int *start = s1;
   int *out = malloc(size * sizeof(int));
   int *tmp = out;
+  int i = 0;
+  int j = size >> 1;
 
-  while (s1 < e1 && s2 < e2)
+  while (i < (size >> 1) && j < size)
   {
-    if (cmp(*s1, *s2) < 0)
-      *tmp = *(s1++);
+    if (cmp(array[i], array[j]) < 0)
+      *(tmp++) = array[i++];
 
     else
-      *tmp = *(s2++);
-
-    ++tmp;
+      *(tmp++) = array[j++];
   }
 
-  while (s1 < e1)
-    *(tmp++) = *(s1++);
+  while (i < (size >> 1))
+    *(tmp++) = array[i++];
 
-  while (s2 < e2)
-    *(tmp++) = *(s2++);
+  while (j < size)
+    *(tmp++) = array[j++];
 
-  memcpy(start, out, size * sizeof(int));
+  memcpy(array, out, size * sizeof(int));
   free(out);
-}
-
-static void __merge_sort(int *start, int *end, int (*cmp)(int, int))
-{
-  if (end - start <= 1)
-    return;
-
-  int *mid = start + ((end - start) >> 1);
-  __merge_sort(start, mid, cmp);
-  __merge_sort(mid, end, cmp);
-  __merge(start, mid, mid, end, cmp);
 }
 
 void merge(int *array, int size, int (*cmp)(int, int))
 {
-  __merge_sort(array, array + size, cmp);
+  if (size <= 1)
+    return;
+
+  merge(array, size >> 1, cmp);
+  merge(array + (size >> 1), size - (size >> 1), cmp);
+  __merge(array, size, cmp);
 }

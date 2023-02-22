@@ -8,12 +8,11 @@ void __observe_insertion(struct setup *setup, struct queue *states)
 
   state_init(&curr);
 
-  // last i < setup->size
+  // for loop end
   ++(curr->comparisons);
 
   for (int i = 1; i < setup->size; ++i)
   {
-    // i < setup->size
     ++(curr->comparisons);
     RESET_SWAP_INDEXES(curr);
 
@@ -32,7 +31,7 @@ void __observe_insertion(struct setup *setup, struct queue *states)
       SAVE_STATE(states, curr, temp);
     }
 
-    // count loop end
+    // while loop end
     if (j <= 0)
     {
       ++(curr->comparisons);

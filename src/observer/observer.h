@@ -9,12 +9,13 @@
 #include "setup/setup.h"
 #include "state/state.h"
 
-typedef void (*observer)(struct setup *setup, struct queue *states);
+typedef void (*observer_t)(struct setup *setup, struct queue *states);
 
 #define OBSERVE_BUBBLE(Setup) observe(Setup, __observe_bubble)
 #define OBSERVE_INSERTION(Setup) observe(Setup, __observe_insertion)
 #define OBSERVE_SELECTION(Setup) observe(Setup, __observe_selection)
 #define OBSERVE_QUICK(Setup) observe(Setup, __observe_quick)
+#define OBSERVE_COCKTAIL(Setup) observe(Setup, __observe_cocktail)
 
 #define SAVE_STATE(States, Curr, Temp)                                                             \
   state_init_from(&Temp, Curr);                                                                    \
@@ -25,9 +26,10 @@ typedef void (*observer)(struct setup *setup, struct queue *states);
   (State)->swap_dst = -1
 
 void __observe_bubble(struct setup *setup, struct queue *states);
+void __observe_cocktail(struct setup *setup, struct queue *states);
 void __observe_insertion(struct setup *setup, struct queue *states);
 void __observe_selection(struct setup *setup, struct queue *states);
 void __observe_quick(struct setup *setup, struct queue *states);
-struct queue *observe(struct setup *setup, observer __observe);
+struct queue *observe(struct setup *setup, observer_t __observe);
 
 #endif /* ! OBSERVER_H */

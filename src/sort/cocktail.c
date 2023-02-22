@@ -1,15 +1,15 @@
 
 #include "sort.h"
 
-static int __left_to_right(int *start, int *end, int (*cmp)(int, int))
+static int __left_to_right(int *array, int size, int (*cmp)(int, int))
 {
   int done = 1;
 
-  for (; start < end; ++start)
+  for (int i = 0; i < size - 1; ++i)
   {
-    if (cmp(*start, *(start + 1)) > 0)
+    if (cmp(array[i], array[i + 1]) > 0)
     {
-      swap(start, start + 1);
+      swap(array + i, array + i + 1);
       done = 0;
     }
   }
@@ -17,15 +17,15 @@ static int __left_to_right(int *start, int *end, int (*cmp)(int, int))
   return done;
 }
 
-static int __right_to_left(int *start, int *end, int (*cmp)(int, int))
+static int __right_to_left(int *array, int size, int (*cmp)(int, int))
 {
   int done = 1;
 
-  for (; end >= start; --end)
+  for (int i = size - 2; i > 0; --i)
   {
-    if (cmp(*end, *(end + 1)) > 0)
+    if (cmp(array[i], array[i - 1]) < 0)
     {
-      swap(end, end + 1);
+      swap(array + i, array + i - 1);
       done = 0;
     }
   }
@@ -35,19 +35,16 @@ static int __right_to_left(int *start, int *end, int (*cmp)(int, int))
 
 void cocktail(int *array, int size, int (*cmp)(int, int))
 {
-  int *start = array;
-  int *end = array + size - 1;
+  int i = 0;
 
   while (42)
   {
-    if (__left_to_right(start, end, cmp))
+    if (__left_to_right(array + i, size - i * 2, cmp))
       break;
 
-    --end;
-
-    if (__right_to_left(start, end - 1, cmp))
+    if (__right_to_left(array + i, size - i * 2, cmp))
       break;
 
-    ++start;
+    ++i;
   }
 }
