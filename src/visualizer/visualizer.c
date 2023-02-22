@@ -6,9 +6,13 @@
 #define BACKGROUND_COLOR 0x80, 0x80, 0x80
 #define BLOCK_COLOR 0x00, 0x00, 0x00
 #define TEXT_COLOR 0xb0, 0xb0, 0xb0
+#define STATS_INITIAL_XY 15
+#define STATS_OFFSET PT2PX(FONT_POINT_SIZE)
+#define STATS_PADDING 2
 
 #define ABS(X) ((X) < 0 ? -(X) : (X))
 #define PT2PX(Pt) ((int)((Pt)*96.0 / 72.0))
+#define Y(Level) (STATS_INITIAL_XY + Level * (STATS_OFFSET + STATS_PADDING))
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -53,14 +57,10 @@ static void __visualize(int *array, int size, struct state *state)
     SDL_RenderFillRect(renderer, &rect);
   }
 
-  int x = 15;
-  int y = 15;
-  int o = PT2PX(FONT_POINT_SIZE);
-
-  __visualize_stats_field("accesses", state->accesses, x, y);
-  __visualize_stats_field("comparisons", state->comparisons, x, y + o + 2);
-  __visualize_stats_field("size", size, x, y + 2 * o + 4);
-  __visualize_stats_field("swaps", state->swaps, x, y + 3 * o + 6);
+  __visualize_stats_field("accesses", state->accesses, STATS_INITIAL_XY, Y(0));
+  __visualize_stats_field("comparisons", state->comparisons, STATS_INITIAL_XY, Y(1));
+  __visualize_stats_field("size", size, STATS_INITIAL_XY, Y(2));
+  __visualize_stats_field("swaps", state->swaps, STATS_INITIAL_XY, Y(3));
   SDL_RenderPresent(renderer);
 }
 
@@ -79,38 +79,48 @@ static float __compute_height_coeff(int *array, int size)
       m = ABS(array[i]);
 
   if (m <= (HEIGHT >> 1))
-    return 1.0f;
+    return 0.66f;
 
-  return 1.0f * HEIGHT / m;
+  return 1.0f * (HEIGHT >> 1) / m;
 }
 
-static void __prepare(int *array, int size)
+static int __prepare(int *array, int size)
 {
+  if (WIDTH < size)
+  {
+    fprintf(stderr, "visualizer: __prepare: WIDTH < size\n");
+    return 1;
+  }
+
+  if (SDL_Init(SDL_INIT_VIDEO) || TTF_Init())
+  {
+    fprintf(stderr, "visualizer: __prepare: %s\n", SDL_GetError());
+    return 1;
+  }
+
+  if (SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer))
+  {
+    fprintf(stderr, "visualizer: __prepare: %s\n", SDL_GetError());
+    return 1;
+  }
+
+  font = TTF_OpenFont(FONT_PATH, FONT_POINT_SIZE);
   hcoeff = __compute_height_coeff(array, size);
+
+  if (font == NULL)
+    fprintf(stderr, "visualizer: __prepapre: font == NULL\n");
+
+  return font == NULL;
 }
 
 void visualize(int *array, int size, struct queue *states)
 {
-  if (SDL_Init(SDL_INIT_VIDEO) || TTF_Init())
+  if (__prepare(array, size))
     return;
-
-  if (SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer))
-    return;
-
-  font = TTF_OpenFont(FONT_PATH, FONT_POINT_SIZE);
-
-  if (font == NULL)
-    return;
-
-  SDL_Event event;
-
-  if (WIDTH < size)
-    goto quit;
-
-  __prepare(array, size);
 
   while (42)
   {
+    SDL_Event event;
     Uint32 start = SDL_GetTicks();
 
     while (SDL_PollEvent(&event))

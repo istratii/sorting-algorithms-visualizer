@@ -17,7 +17,7 @@ debug: $(SRC) src/main.c
 	$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -o $@ $^ $(SDLFLAGS)
 
 check: $(SRC) $(TEST)
-	$(CC) $(CFLAGS) $(LDFLAGS) -Ofast -o $@ $^ -lSDL $(CRTFLAGS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -Ofast -o $@ $^ $(SDLFLAGS) $(CRTFLAGS)
 
 clean:
 	$(RM) main debug check clean

@@ -1,7 +1,7 @@
 
 #include "setup.h"
 
-void setup_init(struct setup **setup, int *array, int size)
+void setup_init(struct setup **setup, int *array, int size, int (*cmp)(int, int))
 {
   if (setup == NULL)
     return;
@@ -13,6 +13,7 @@ void setup_init(struct setup **setup, int *array, int size)
 
   (*setup)->array = array;
   (*setup)->size = size;
+  (*setup)->cmp = cmp;
 }
 
 void setup_free(struct setup **setup)

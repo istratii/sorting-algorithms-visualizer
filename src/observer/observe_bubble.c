@@ -1,7 +1,7 @@
 
 #include "observer.h"
 
-static void __observe_bubble(int *array, int size, int (*cmp)(int, int), struct queue *queue)
+void __observe_bubble(struct setup *setup, struct queue *states)
 {
   int i = 0;
 
@@ -10,19 +10,18 @@ static void __observe_bubble(int *array, int size, int (*cmp)(int, int), struct 
 
   state_init(&curr);
 
-  if (curr == NULL)
-    return;
+  // loop end
+  ++(curr->comparisons);
 
-  while (i + 1 < size)
+  while (i + 1 < setup->size)
   {
-    ++(curr->comparisons);
+    curr->comparisons += 2;
+    curr->accesses += 2;
+    RESET_SWAP_INDEXES(curr);
 
-    curr->swap_src = -1;
-    curr->swap_dst = -1;
-
-    if (cmp(array[i], array[i + 1]) > 0)
+    if (setup->cmp(setup->array[i], setup->array[i + 1]) > 0)
     {
-      swap(array + i, array + i + 1);
+      swap(setup->array + i, setup->array + i + 1);
       curr->swap_src = i;
       curr->swap_dst = i + 1;
       ++(curr->swaps);
@@ -30,25 +29,9 @@ static void __observe_bubble(int *array, int size, int (*cmp)(int, int), struct 
       i = i - 1 - (i > 0);
     }
 
-    (curr->accesses) += 2;
-    ++(curr->comparisons);
+    SAVE_STATE(states, curr, temp);
     ++i;
-
-    state_init_from(&temp, curr);
-    queue_push(queue, temp);
   }
 
   state_free(&curr);
-}
-
-struct queue *observe_bubble(int *array, int size, int (*cmp)(int, int))
-{
-  struct queue *queue = NULL;
-
-  queue_init(&queue);
-
-  if (queue != NULL)
-    __observe_bubble(array, size, cmp, queue);
-
-  return queue;
 }

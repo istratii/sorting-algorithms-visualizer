@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "observer/observer.h"
 #include "sort/sort.h"
@@ -13,13 +14,16 @@ int comp(int a, int b)
 
 int main(void)
 {
-  int array[100];
-  for (int i = 0; i < 100; ++i)
-    array[i] = rand() % 1000 - 500;
-  int cpy[100];
-  memcpy(cpy, array, 100 * sizeof(int));
-  struct queue *q = observe_bubble(array, 100, comp);
-  visualize(cpy, 100, q);
+  srand(time(NULL));
+  const int SIZE = 1000;
+  int array[SIZE];
+  for (int i = 0; i < SIZE; ++i)
+    array[i] = rand() % 40000 - 5000;
+  int cpy[SIZE];
+  memcpy(cpy, array, SIZE * sizeof(int));
+  struct setup setup = { array, SIZE, comp };
+  struct queue *q = OBSERVE_QUICK(&setup);
+  visualize(cpy, SIZE, q);
   queue_free(&q, free);
 
   return 0;
