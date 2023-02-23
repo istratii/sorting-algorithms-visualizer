@@ -5,7 +5,6 @@
 #include <time.h>
 
 #include "observer/observer.h"
-#include "sort/sort.h"
 #include "visualizer/visualizer.h"
 
 #define OK 0
@@ -26,7 +25,7 @@ int main(int argc, char *argv[])
 {
   if (argc <= 1)
   {
-    fprintf(stderr, "main: usage: ./main format\n");
+    fprintf(stderr, "main: usage: ./main [bBcCiIqQsS][aAdD][0-9]+\n");
     return KO;
   }
 
@@ -94,7 +93,7 @@ static int __prepare_observer(char c)
     observer = __observe_selection;
     break;
   default:
-    fprintf(stderr, "main: unknown observer, expect (b|B|c|C|i|I|q|Q|s|S)\n");
+    fprintf(stderr, "main: unknown observer, expect [bBcCiIqQsS]\n");
     return KO;
   }
 
@@ -111,7 +110,7 @@ static int __prepare_mode(char c)
 
   else
   {
-    fprintf(stderr, "main: unknown mode, expect (a|A|d|D)\n");
+    fprintf(stderr, "main: unknown mode, expect [aAdD]\n");
     return KO;
   }
 
@@ -142,7 +141,7 @@ static int __prepare(const char *format)
 
 static void __randomize(int *array, int size)
 {
-  int deviation = BOUND - rand() % BOUND;
+  int deviation = rand() % (BOUND << 1);
 
   for (int i = 0; i < size; ++i)
     array[i] = rand() % (BOUND << 1) - deviation;

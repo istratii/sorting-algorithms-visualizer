@@ -1,11 +1,15 @@
 
 #include "visualizer.h"
 
-#define FONT_PATH "src/visualizer/fonts/PIXEAB__.TTF"
+#define FONT_PATH "assets/fonts/PIXEAB__.TTF"
 #define FONT_POINT_SIZE 15
 #define BACKGROUND_COLOR 0x80, 0x80, 0x80
 #define BLOCK_COLOR 0x00, 0x00, 0x00
 #define TEXT_COLOR 0xb0, 0xb0, 0xb0
+#define RMASK 0x00ff0000
+#define GMASK 0x0000ff00
+#define BMASK 0x000000ff
+#define AMASK 0xff000000
 #define STATS_INITIAL_XY 15
 #define STATS_OFFSET PT2PX(FONT_POINT_SIZE)
 #define STATS_PADDING 2
@@ -19,6 +23,7 @@ static SDL_Renderer *renderer = NULL;
 static TTF_Font *font = NULL;
 static const SDL_Color bkcolor = { TEXT_COLOR };
 static char buffer[50];
+static int bmp_id = 0;
 static float hcoeff = 0.0f;
 
 static void __visualize_stats_field(char *name, int value, int x, int y)
@@ -119,6 +124,15 @@ static int __prepare(int *array, int size)
   return font == NULL;
 }
 
+static void save_bmp(void)
+{
+  sprintf(buffer, "src/visualizer/bmp_%d.bmp", bmp_id++);
+  SDL_Surface *screen = SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK);
+  SDL_RenderReadPixels(renderer, NULL, SDL_PIXELFORMAT_ARGB8888, screen->pixels, screen->pitch);
+  SDL_SaveBMP(screen, buffer);
+  SDL_FreeSurface(screen);
+}
+
 void visualize(int *array, int size, struct queue *states)
 {
   if (__prepare(array, size))
@@ -143,6 +157,7 @@ void visualize(int *array, int size, struct queue *states)
     __next(array, state);
 
     state_free(&state);
+    // save_bmp();
 
     if (1000 / FPS > SDL_GetTicks() - start)
       SDL_Delay(1000 / FPS - SDL_GetTicks() + start);
