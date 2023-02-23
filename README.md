@@ -28,10 +28,10 @@ Example:
 
 ```shell
 42sh> make main
-42sh> ./main qa100
+42sh> ./main CA20
 ```
 
-![til](assets/gifs/qa100.gif)
+![til](assets/gifs/ca20.gif)
 
 # Specifications
 
