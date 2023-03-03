@@ -33,13 +33,6 @@ Example:
 
 ![til](assets/gifs/qa100.gif)
 
-```shell
-42sh> make main
-42sh> ./main cd50
-```
-
-![til](assets/gifs/cd50.gif)
-
 # Specifications
 
 - The amount of integers to sort has to be greater than 0 but less or equal to `WIDTH` from `src/visualizer/visualizer.h`. This is because each number is represented by a `SDL_Rect` structure whose width can not be 0 in order to be graphically seen.
