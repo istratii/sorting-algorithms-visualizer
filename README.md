@@ -3,6 +3,9 @@ Simple, command line controlled, visualizer of the sorting process of different 
 
 # Setup
 ```shell
+42sh> chmod +x clean.sh
+42sh> chmod +x compile.sh
+42sh> chmod +x format.sh
 42sh> chmod +x setup.sh
 42sh> ./setup.sh
 ```

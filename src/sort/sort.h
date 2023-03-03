@@ -19,14 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../queue/queue.h"
-#include "../state/state.h"
-
-extern int *begin;
-extern int comparisons;
-extern int swaps;
-extern struct state *curr;
-extern struct queue *states;
+#include "queue/queue.h"
+#include "state/state.h"
 
 void bubble(SIGNATURE);
 void insertion(SIGNATURE);

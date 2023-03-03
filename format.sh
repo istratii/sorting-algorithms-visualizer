@@ -2,6 +2,6 @@
 #!/bin/sh
 
 for file in $(find . -name "*.[ch]"); do
-	echo "formatting $file"
+	echo "Formatting $file"
 	clang-format -i "$file"
 done

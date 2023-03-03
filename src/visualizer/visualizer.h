@@ -10,7 +10,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
-#include "../sort/sort.h"
+#include "sort/sort.h"
 
 void visualize(int *array, int size, struct queue *states);
 
