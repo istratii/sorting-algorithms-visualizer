@@ -64,10 +64,9 @@ static void __visualize(int *array, int size, struct state *state)
   }
 
   // render stats
-  __visualize_stats_field("accesses", state->accesses, STATS_INITIAL_XY, Y(0));
+  __visualize_stats_field("size", size, STATS_INITIAL_XY, Y(0));
   __visualize_stats_field("comparisons", state->comparisons, STATS_INITIAL_XY, Y(1));
-  __visualize_stats_field("size", size, STATS_INITIAL_XY, Y(2));
-  __visualize_stats_field("swaps", state->swaps, STATS_INITIAL_XY, Y(3));
+  __visualize_stats_field("swaps", state->swaps, STATS_INITIAL_XY, Y(2));
 
   // update screen
   SDL_RenderPresent(renderer);
@@ -147,9 +146,11 @@ void visualize(int *array, int size, struct queue *states)
       if (event.type == SDL_QUIT)
         goto quit;
 
+    // no more data to display
     if (states->head == NULL)
       continue;
 
+    // display
     struct state *state = NULL;
     queue_pop(states, (void **)&state);
 
@@ -159,6 +160,7 @@ void visualize(int *array, int size, struct queue *states)
     state_free(&state);
     // save_bmp();
 
+    // adapt to FPS
     if (1000 / FPS > SDL_GetTicks() - start)
       SDL_Delay(1000 / FPS - SDL_GetTicks() + start);
   }

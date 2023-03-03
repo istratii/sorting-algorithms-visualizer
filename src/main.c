@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "observer/observer.h"
+#include "sort/sort.h"
 #include "visualizer/visualizer.h"
 
 #define OK 0
@@ -16,10 +16,16 @@ static int __asc(int a, int b);
 static int __des(int a, int b);
 static int __prepare(const char *format);
 static void __randomize(int *array, int size);
+static void __sort(int *array, int size);
 
 static int (*cmp)(int, int) = NULL;
-static observer_t observer = NULL;
+static void (*sort)(int *, int, int (*)(int, int)) = NULL;
 static int size = 0;
+
+extern int *begin;
+extern int done;
+extern struct queue *states;
+extern struct state *curr;
 
 int main(int argc, char *argv[])
 {
@@ -46,12 +52,17 @@ int main(int argc, char *argv[])
   __randomize(array, size);
   memcpy(copy, array, size * sizeof(int));
 
-  struct setup setup = { array, size, cmp };
-  struct queue *states = observe(&setup, observer);
+  // init global vars
+  begin = array;
+  state_init(&curr);
+  queue_init(&states);
 
-  if (states == NULL)
+  if (curr == NULL || states == NULL)
     return KO;
 
+  __sort(array, size);
+
+  // reproduce the sorting process graphically
   visualize(copy, size, states);
 
   queue_free(&states, free);
@@ -60,40 +71,46 @@ int main(int argc, char *argv[])
 
 static int __asc(int a, int b)
 {
+  if (!done)
+    UPDATE_CMP(curr);
+
   return a - b;
 }
 
 static int __des(int a, int b)
 {
+  if (!done)
+    UPDATE_CMP(curr);
+
   return b - a;
 }
 
-static int __prepare_observer(char c)
+static int __prepare_sort(char c)
 {
   switch (c)
   {
   case 'b':
   case 'B':
-    observer = __observe_bubble;
+    sort = bubble;
     break;
   case 'c':
   case 'C':
-    observer = __observe_cocktail;
+    sort = cocktail;
     break;
   case 'i':
   case 'I':
-    observer = __observe_insertion;
+    sort = insertion;
     break;
   case 'q':
   case 'Q':
-    observer = __observe_quick;
+    sort = quick;
     break;
   case 's':
   case 'S':
-    observer = __observe_selection;
+    sort = selection;
     break;
   default:
-    fprintf(stderr, "main: unknown observer, expect [bBcCiIqQsS]\n");
+    fprintf(stderr, "main: unknown sort, expect [bBcCiIqQsS]\n");
     return KO;
   }
 
@@ -127,7 +144,7 @@ static int __prepare_size(const char *s)
 
 static int __prepare(const char *format)
 {
-  if (__prepare_observer(*format))
+  if (__prepare_sort(*format))
     return KO;
 
   if (__prepare_mode(*(format + 1)))
@@ -145,4 +162,16 @@ static void __randomize(int *array, int size)
 
   for (int i = 0; i < size; ++i)
     array[i] = rand() % (BOUND << 1) - deviation;
+}
+
+static void __sort(int *array, int size)
+{
+  // allow collecting data
+  done = 0;
+
+  // collect data
+  sort(array, size, cmp);
+
+  // disallow collecting data
+  done = 1;
 }

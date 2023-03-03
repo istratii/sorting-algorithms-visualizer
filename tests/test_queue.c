@@ -2,7 +2,7 @@
 #include <criterion/criterion.h>
 #include <stdlib.h>
 
-#include "../src/observer/queue/queue.h"
+#include "../src/queue/queue.h"
 
 Test(test_queue, test_0)
 {
